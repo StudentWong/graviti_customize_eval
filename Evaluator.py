@@ -103,7 +103,8 @@ class Evaluator:
         y = self.x * ratio
         dict_ret = {
             'overall': {
-                    'float_file_metric': r_float,
+                    'customized_iou': r_float,
+                    'float_file_metric': self.cnt,
                     'curve_file_metric': {
                         'x': self.x.tolist(),
                         'y': y.tolist()
