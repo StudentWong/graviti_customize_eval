@@ -111,5 +111,5 @@ class Evaluator:
                     }
                 }
         }
-        return dict_ret
+        return {}
 
