@@ -63,6 +63,7 @@ class Evaluator:
 
         elif "BOX2D" in input_source.keys() and "BOX2D" in input_target.keys():
             self.cnt = self.cnt + 0.5
+            category_dict = dict()
             paired_iou_list = []
             source_list = input_source['BOX2D']
             target_list = input_target['BOX2D']
@@ -72,13 +73,32 @@ class Evaluator:
                         iou = self.iou2d_caculate(s, t)
                         if iou > 0.5:
                             paired_iou_list = paired_iou_list + [iou]
+                            if s['category'] not in category_dict.keys():
+                                category_dict[s['category']] = [iou]
+                            else:
+                                category_dict[s['category']] = category_dict[s['category']] + [iou]
             if len(paired_iou_list) != 0:
                 iou_mean = float(np.array(paired_iou_list).mean())
             else:
                 iou_mean = 0
 
+            d_item = dict()
+            for k in category_dict.keys():
+                iou_mean_item = float(np.array(category_dict[k]).mean())
+                ratio = np.tan(iou_mean_item)
+                y = (self.x * self.x) * np.exp(ratio) + np.log(ratio) * self.x + ratio
+
+                d_item[k] = {
+                        'float_file_metric': self.cnt,
+                        'customized_iou': iou_mean_item,
+                        'curve_file_metric': {
+                            'x': self.x.tolist(),
+                            'y': y.tolist()
+                            }
+                        }
+
             ratio = np.tan(iou_mean)
-            y = self.x * ratio
+            y = (self.x * self.x) * np.exp(ratio) + np.log(ratio) * self.x + ratio
 
             dict_ret = {
                     'overall': {
@@ -102,6 +122,8 @@ class Evaluator:
         self.cnt = self.cnt + 0.5
         ratio = np.tan(self.cnt)
         y = self.x * ratio
+        yy = self.x * self.x + ratio * self.x
+        yyy = ratio * self.x * self.x + self.x
         dict_ret = {
             'overall': {
                     'customized_iou': r_float,
