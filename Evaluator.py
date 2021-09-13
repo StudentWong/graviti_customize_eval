@@ -117,22 +117,5 @@ class Evaluator:
         return dict_ret
 
     def get_result(self) -> dict:
-        r = np.array(self.result)
-        r_float = float(r.mean())
-        self.cnt = self.cnt + 0.5
-        ratio = np.tan(self.cnt)
-        y = self.x * ratio
-        yy = self.x * self.x + ratio * self.x
-        yyy = ratio * self.x * self.x + self.x
-        dict_ret = {
-            'overall': {
-                    'customized_iou': r_float,
-                    'float_file_metric': self.cnt,
-                    'curve_file_metric': {
-                        'x': self.x.tolist(),
-                        'y': y.tolist()
-                    }
-                }
-        }
         return {}
 
